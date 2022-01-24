@@ -1,5 +1,7 @@
 # quiz
 
+a tutorial app to learn Vue3 and Typescript
+
 ## Project setup
 ```
 yarn install
