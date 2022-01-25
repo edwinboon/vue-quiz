@@ -1,13 +1,15 @@
 <template>
   <div class="ctr">
-    <questions 
-      v-if="questionsAnswered < questions.length" 
-      :questions="questions" 
-      :questionsAnswered="questionsAnswered" 
-      @question-answered="questionAnswered"
-    />
-    <results v-else />
-    <button type="button" class="reset-btn">Reset</button>
+    <transition name="fade" mode="out-in">
+      <questions 
+        v-if="questionsAnswered < questions.length" 
+        :questions="questions" 
+        :questionsAnswered="questionsAnswered" 
+        @question-answered="questionAnswered"
+      />
+      <results v-else :result="result" :totalCorrect="totalCorrect"/>
+    </transition>
+    <button v-if="questionsAnswered === questions.length" type="button" class="reset-btn" @click.prevent="reset">Reset</button>
   </div>
 </template>
 
@@ -24,11 +26,17 @@ export default defineComponent({
   setup() {
     let questionsAnswered = ref<number>(0)
     let totalCorrect = ref<number>(0)
-    const questionAnswered = ref((is_correct: boolean): void=> {
+
+    const questionAnswered = ref((is_correct: boolean): void => {
       if(is_correct) {
         totalCorrect.value++
       }
       questionsAnswered.value++
+    })
+
+    const reset = ref((): void => {
+      questionsAnswered.value = 0
+      totalCorrect.value = 0
     })
 
     // data for questions and results
@@ -108,7 +116,7 @@ export default defineComponent({
       },
     ]);
 
-    return { questionsAnswered, totalCorrect, questionAnswered, questions, result}
+    return { questionsAnswered, totalCorrect, questionAnswered, questions, result, reset}
   },
 });
 </script>
