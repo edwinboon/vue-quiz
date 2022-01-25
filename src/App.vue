@@ -1,6 +1,11 @@
 <template>
   <div class="ctr">
-    <questions v-if="questionsAnswered < questions.length" :questions="questions" />
+    <questions 
+      v-if="questionsAnswered < questions.length" 
+      :questions="questions" 
+      :questionsAnswered="questionsAnswered" 
+      @question-answered="questionAnswered"
+    />
     <results v-else />
     <button type="button" class="reset-btn">Reset</button>
   </div>
@@ -17,7 +22,16 @@ export default defineComponent({
   name: "App",
   components: { Questions, Results },
   setup() {
-    const questionsAnswered = ref<number>(0)
+    let questionsAnswered = ref<number>(0)
+    let totalCorrect = ref<number>(0)
+    const questionAnswered = ref((is_correct: boolean): void=> {
+      if(is_correct) {
+        totalCorrect.value++
+      }
+      questionsAnswered.value++
+    })
+
+    // data for questions and results
     const questions = ref<Question[]>([
       {
         q: "What is 2 + 2?",
@@ -94,7 +108,7 @@ export default defineComponent({
       },
     ]);
 
-    return { questionsAnswered, questions, result}
+    return { questionsAnswered, totalCorrect, questionAnswered, questions, result}
   },
 });
 </script>
